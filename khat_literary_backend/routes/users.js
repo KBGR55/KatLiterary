@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const multer = require('multer');
+const path = require('path'); // Asegúrate de importar path aquí
 
 // Controllers
 const GeneroController = require('../controls/GeneroController');
@@ -14,11 +15,9 @@ var cuentaController = new CuentaController();
 
 // Multer storage configuration for book covers
 const storage_portada_libro = () => multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, '../public/images/libros/portadas/');  // Change this to the desired upload directory
-    },
+    destination: path.resolve(__dirname, '../public/images/libros/portadas'), // Ajusta la ruta si es necesario
     filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`);
+        cb(null, Date.now() + '-' + file.originalname);
     }
 });
 
@@ -51,7 +50,7 @@ router.post('/persona/guardar', personaController.guardar);
 
 // Rutas de Libro
 router.post('/libro/guardar', upload_portada_libro.single('portada'), libroController.guardar);
-
+router.get('/libro/listar', libroController.listar);
 // Cuenta
 router.post('/cuenta/sesion', cuentaController.sesion);
 
